@@ -4,7 +4,7 @@ const axios = require('axios')
 
 
 // Import cấu hình bot từ file config
-const { botToken ,weatherApikey ,newsApikey} = require('./src/config/botConfig');
+const { botToken ,weatherApiKey ,newsApiKey} = require('./src/config/botConfig');
 
 // Khởi tạo một instance của TelegramBot với token
 const bot = new TelegramBot(botToken, { polling: true });
@@ -29,17 +29,16 @@ bot.on('message', (msg) => {
     }
 });  
 
-
 // Xử lý yêu cầu lấy thông tin thời tiết  
 bot.onText(/\/weather (.+)/ ,async (msg,match) =>{
     const chatId =  msg.chat.id  
     const city = match[1] 
     
     try {
-        const response = await axios.get('https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=metric')
+        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=metric`)
         const weatherData = response.data  
         const weatherDescription = weatherData.weather[0].description 
-        const temparature = weatherData.main.temp 
+        const temperature = weatherData.main.temp 
         bot.sendMessage(chatId, `Thời tiết tại ${city}: ${weatherDescription}, nhiệt độ: ${temperature}°C`);
     } catch (error) {
         bot.sendMessage(chatId,)
@@ -58,6 +57,7 @@ bot.onText(/\/news/, async (msg) => {
         bot.sendMessage(chatId, 'Không thể lấy tin tức.');
     }
 })
+
 
 // Bắt đầu lắng nghe các sự kiện từ bot
 bot.startPolling();
